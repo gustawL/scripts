@@ -1,0 +1,4 @@
+file_or_dir:
+    path: '/full/path/to/dir/that/contain/file/or/dir'
+    name: 'name_of_this_file_or_dir'
+    repo_path: 'dir_in_repo/that/will/contain/file_or_dir'
