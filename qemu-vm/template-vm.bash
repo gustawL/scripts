@@ -17,9 +17,9 @@ if [[ ! -f "$drive_file" ]]; then
   exit 1
 fi
 
-if [[ -n "$iso_file" && ! -f "$iso_file" ]]; then
-  echo "Error: ISO file does not exist: $iso_file" >&2
-  exit 1
+if [[ "${2:-}" == "bootdisk" ]]; then
+  iso_file=""
+  boot_mode="$2"
 fi
 
 disk_bootindex=1
