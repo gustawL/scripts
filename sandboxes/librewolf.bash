@@ -44,7 +44,6 @@ exec bwrap \
   --ro-bind-try /etc/resolv.conf /etc/resolv.conf \
   --ro-bind-try /etc/fonts /etc/fonts \
   --ro-bind-try /var/cache/fontconfig /var/cache/fontconfig \
-  --dev-bind /dev/dri /dev/dri \
   --dev-bind /dev/hidraw7 /dev/hidraw7 \
   --dev-bind /dev/hidraw8 /dev/hidraw8 \
   --dev-bind-try /dev/snd /dev/snd \
@@ -55,6 +54,8 @@ exec bwrap \
   --ro-bind-try "$XDG_RUNTIME_DIR/pipewire-0" "$XDG_RUNTIME_DIR/pipewire-0" \
   --bind "$HOST_DOWNLOADS" "$HOME/Downloads" \
   --setenv MOZ_ENABLE_WAYLAND 1 \
+  --setenv LIBGL_ALWAYS_SOFTWARE 1 \
+  --setenv MOZ_WEBRENDER 0 \
   --setenv XDG_RUNTIME_DIR "$XDG_RUNTIME_DIR" \
   --setenv WAYLAND_DISPLAY "$WAYLAND_DISPLAY" \
   --setenv HOME "$HOME" \
