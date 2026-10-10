@@ -64,6 +64,7 @@ exec bwrap \
   --setenv MOZ_ENABLE_WAYLAND 1 \
   --setenv LIBGL_ALWAYS_SOFTWARE 1 \
   --setenv MOZ_WEBRENDER 0 \
+  --setenv MOZ_CUBEB_BACKEND alsa \
   --setenv XDG_RUNTIME_DIR "$XDG_RUNTIME_DIR" \
   --setenv WAYLAND_DISPLAY "$WAYLAND_DISPLAY" \
   --setenv HOME "$HOME" \
