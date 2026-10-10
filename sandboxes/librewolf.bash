@@ -46,7 +46,6 @@ exec bwrap \
   --ro-bind-try /var/cache/fontconfig /var/cache/fontconfig \
   --dev-bind /dev/hidraw7 /dev/hidraw7 \
   --dev-bind /dev/hidraw8 /dev/hidraw8 \
-  --dev-bind-try /dev/snd /dev/snd \
   --ro-bind-try /etc/alsa /etc/alsa \
   --ro-bind-try /etc/asound.conf /etc/asound.conf \
   --ro-bind-try /usr/share/alsa /usr/share/alsa \
