@@ -7,6 +7,7 @@ set -euo pipefail
 XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-0}"
 
+mkdir -p /tmp/Downloads
 HOST_DOWNLOADS="/tmp/Downloads"
 
 exec bwrap \
