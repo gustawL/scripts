@@ -10,6 +10,16 @@ WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-0}"
 mkdir -p /tmp/Downloads
 HOST_DOWNLOADS="/tmp/Downloads"
 
+HIDRAW_ARGS=()
+
+for dev in /dev/hidraw*; do
+  if [[ -c "$dev" ]]; then
+    if udevadm info --query=property --name="$dev" | grep -q "^ID_VENDOR_ID=1050$"; then
+      HIDRAW_ARGS+=(--dev-bind "$dev" "$dev")
+    fi
+  fi
+done
+
 exec bwrap \
   --unshare-all \
   --share-net \
@@ -44,8 +54,7 @@ exec bwrap \
   --ro-bind-try /etc/resolv.conf /etc/resolv.conf \
   --ro-bind-try /etc/fonts /etc/fonts \
   --ro-bind-try /var/cache/fontconfig /var/cache/fontconfig \
-  --dev-bind /dev/hidraw7 /dev/hidraw7 \
-  --dev-bind /dev/hidraw8 /dev/hidraw8 \
+  "${HIDRAW_ARGS[@]}" \
   --ro-bind-try /etc/alsa /etc/alsa \
   --ro-bind-try /etc/asound.conf /etc/asound.conf \
   --ro-bind-try /usr/share/alsa /usr/share/alsa \
