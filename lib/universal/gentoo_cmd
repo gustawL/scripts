@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+
+# Copyright 2023 Gustaw Lizak
+
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+
+# This program is distributed in the hope that it will be useful but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
+
+# Jumpers:
+# 000 repo sync functions
+# 001 update functions
+# 002 newuse functions
+# 003 depclean functions
+
+# 000 repo sync functions
+# References and help:
+#  https://wiki.gentoo.org/wiki/Portage#emaint
+#  https://wiki.gentoo.org/wiki/Ebuild_repository#Repository_synchronization
+emaint_sync_repo(){
+    sudo emaint sync -a;
+}
+
+# 001 update functions
+emerge_update_fn(){
+    sudo emerge --update --deep --keep-going @world;
+}
+
+std_update_color(){
+    sudo emerge --pretend --update --deep @world;
+
+    echo '';
+
+    yn_ps_color 'Run update?';
+
+    read -r input;
+
+    yn_color "$input" "emerge_update_fn";
+}
+
+# 002 newuse functions
+newuse_fn(){
+    sudo emerge --update --deep --newuse --keep-going @world;
+}
+
+std_newuse_color(){
+    sudo emerge --pretend --update --deep --newuse @world;
+
+    echo '';
+
+    yn_ps_color 'Run udpate with --newuse?';
+
+    read -r input;
+
+    yn_color "$input" "newuse_fn";
+}
+
+# 003 depclean functions
+depclean_fn(){
+    sudo emerge --depclean;
+}
+
+std_depclean_color(){
+    sudo emerge --pretend --depclean;
+
+    echo '';
+
+    yn_ps_color 'Run depclean?';
+
+    read -r input;
+
+    yn_color "$input" "depclean_fn";
+}

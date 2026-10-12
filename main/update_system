@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+
+# Copyright 2023 Gustaw Lizak
+
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+
+# This program is distributed in the hope that it will be useful but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
+
+# NOTE: Following lines needs to be global
+#       for colored help and errors.
+cd "$(dirname "${BASH_SOURCE[0]}")" || exit 64;
+
+# cmd colors
+source ../lib/universal/cmd_colors;
+
+main() {
+    # standard script settings
+    source ../lib/universal/std_settings;
+
+    # customized help
+    source ../lib/core/update_system/help;
+
+    # custom poweroff and reboot
+    source ../lib/universal/sys_pwr;
+
+    # update handler
+    source ../lib/core/update_system/update_fn;
+
+    # customized menu
+    source ../lib/core/update_system/print_menu;
+
+    # gentoo specific cmd (requires cmd_colors)
+    source ../lib/universal/gentoo_cmd;
+
+    no_args="true"
+
+    while getopts ":uh" opt; do
+	case $opt in
+	    u)
+		# Handle update function
+		update_fn;
+		;;
+	    h)
+		# Handle help function
+		help_fn;
+		;;
+	    \?)
+		# Handle error function:
+		#     unknown option or missing required argument.
+		unknown_opt;
+		;;
+	esac
+	no_args="false"
+    done
+
+    shift $((OPTIND-1))
+
+    [[ "$no_args" == "true" ]] && { cmd_fail 'No arguments.'; exit 64; }
+
+    exit 0;
+}
+
+if [ $# -gt 1 ]; then
+    cmd_fail 'Too much arguments.';
+else
+    main "$@";
+fi

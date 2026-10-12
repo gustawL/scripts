@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+
+# Copyright 2023 Gustaw Lizak
+
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+
+# This program is distributed in the hope that it will be useful but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
+
+update_fn(){
+
+    local menu_select;
+
+    while :
+    do
+	print_menu;
+
+	# NOTE: in case of problems
+	# menu option counter is located in print_menu function
+	ps_color 'Choice';
+	read menu_select;
+
+	case ${menu_select} in
+	    1)
+		sudo emaint sync -a \
+		     || exit 64;
+		;;
+	    2)
+		std_update_color \
+		    || exit 64;
+		;;
+	    3)
+		std_depclean_color \
+		    || exit 64;
+		;;
+	    4)
+		sudo dispatch-conf \
+		    && out_done '...';
+		;;
+	    5)
+		sudo mandb \
+		    && out_done 'Man pages updated.';
+		;;
+	    6)
+		sudo emerge \
+		     --oneshot \
+		     sys-apps/portage \
+		     && out_done 'Portage updated.';
+		;;
+	    7)
+		std_newuse_color \
+		    || exit 64;
+		;;
+	    8)
+		echo '';
+		sudo eselect news read;
+		exit 0;
+		;;
+	    'q')
+		exit 0;
+		;;
+	    'r')
+		reboot_pc;
+		;;
+	    'p')
+		poweroff_pc;
+		;;
+	    *)
+		out_error "Invalid choice.";
+		;;
+
+	esac
+    done
+}

@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+
+# Copyright 2023 Gustaw Lizak
+
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+
+# This program is distributed in the hope that it will be useful but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
+
+print_menu(){
+    # menu options counter
+    menu_opt_num=8;
+
+    echo '';
+    color_selection green '      System updater';
+    echo;
+    echo '    ------------------';
+
+    color_selection green '1';
+    color_selection blue ') ';
+    echo ' Sync repo';
+
+    color_selection green '2';
+    color_selection blue ') ';
+    echo ' Check and update';
+
+    color_selection green '3';
+    color_selection blue ') ';
+    echo ' Run depclean';
+
+    color_selection green '4';
+    color_selection blue ') ';
+    echo ' Run dispatch-conf';
+
+    color_selection green '5';
+    color_selection blue ') ';
+    echo ' Update man pages';
+
+    color_selection green '6';
+    color_selection blue ') ';
+    echo ' Update portage';
+
+    color_selection green '7';
+    color_selection blue ') ';
+    echo ' New use';
+
+    color_selection green '8';
+    color_selection blue ') ';
+    echo ' Read news and exit';
+
+    echo '    ------------------';
+
+    color_selection green 'q';
+    color_selection blue ') ';
+    echo ' Quit program';
+
+    color_selection green 'r';
+    color_selection blue ') ';
+    echo ' Reboot system';
+
+    color_selection green 'p';
+    color_selection blue ') ';
+    echo ' Poweroff system';
+
+    # End, do not delete last echo!
+    echo;
+}

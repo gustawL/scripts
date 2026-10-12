@@ -1,0 +1,232 @@
+#!/usr/bin/env bash
+
+# Copyright 2023 Gustaw Lizak
+
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+
+# This program is distributed in the hope that it will be useful but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
+
+# jumpers:
+# 000 color palette
+# 001 color selection function
+# 002 output messages
+# 003 colored simple prompts
+# 004 colored [y/n] prompt
+# 005 cmd line errors
+
+# 000 color palette
+BLACK='\033[0;30m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+MAGENTA='\033[0;35m'
+CYAN='\033[0;36m'
+WHITE='\033[0;37m'
+GRAY='\033[0;90m'
+
+LRED='\033[0;91m'
+LGREEN='\033[0;92m'
+LYELLOW='\033[0;93m'
+LBLUE='\033[0;94m'
+LMAGENTA='\033[0;95m'
+LCYAN='\033[0;96m'
+LWHITE='\033[0;97m'
+
+NC='\033[0m' # No Color
+
+# 001 color selection function - you provide desired color, and message to
+# color.
+color_selection(){
+    local scolor;
+    scolor="${1}";
+    local message;
+    message="${2}";
+
+    case $scolor in
+	'black')
+	    echo -n -e "${BLACK}$message${NC}";
+	    ;;
+	'red')
+	    echo -n -e "${RED}$message${NC}";
+	    ;;
+	'green')
+	    echo -n -e "${GREEN}$message${NC}";
+	    ;;
+	'yellow')
+	    echo -n -e "${YELLOW}$message${NC}";
+	    ;;
+	'blue')
+	    echo -n -e "${BLUE}$message${NC}";
+	    ;;
+	'magenta')
+	    echo -n -e "${MAGENTA}$message${NC}";
+	    ;;
+	'cyan')
+	    echo -n -e "${CYAN}$message${NC}";
+	    ;;
+	'white')
+	    echo -n -e "${WHITE}$message${NC}";
+	    ;;
+	'grey')
+	    echo -n -e "${GRAY}$message${NC}";
+	    ;;
+	*)
+	    exit 64;
+	    ;;
+    esac
+}
+
+# 002 Output messages - done, warning, error, ok
+# done
+out_done(){
+    echo '';
+    color_selection blue '[';
+    echo -n ' ';
+    color_selection green 'done';
+    echo -n ' ';
+    color_selection blue ']';
+    echo -n " ${1} ";
+    echo '';
+}
+
+# warning
+out_warning(){
+    echo '';
+    color_selection blue '[';
+    echo -n ' ';
+    color_selection yellow 'WARNING';
+    echo -n ' ';
+    color_selection blue ']';
+    echo -n " ${1} ";
+    echo '';
+}
+
+# error
+out_error(){
+    echo '';
+    color_selection blue '[';
+    echo -n ' ';
+    color_selection red 'ERROR';
+    echo -n ' ';
+    color_selection blue ']';
+    echo -n " ${1} ";
+    echo '';
+}
+
+# ok
+out_ok(){
+    echo '';
+    color_selection blue '[';
+    echo -n ' ';
+    color_selection green 'ok';
+    echo -n ' ';
+    color_selection blue ']';
+    echo -n " ${1} ";
+    echo '';
+}
+
+# 003 colored simple prompts
+# Colored message >>> $input
+ps_color(){
+    echo -n "${1}"
+    echo -n ' ';
+    color_selection green '>>>';
+    echo -n ' ';
+}
+
+# Colored message [ colored message ] >>> $input
+ps_box_color(){
+    echo -n "${1}"
+    echo -n ' ';
+    color_selection blue '[';
+    echo -n ' ';
+    color_selection green "${2}";
+    echo -n ' ';
+    color_selection blue ']';
+    echo -n ' ';
+    color_selection green '>>>';
+    echo -n ' ';
+}
+
+# 004 colored [y/n] prompt
+# colored message [ y/n ] >>> $input
+yn_ps_color(){
+    echo -n "${1}"
+    echo -n ' ';
+    color_selection blue '[';
+    echo -n ' ';
+    color_selection green 'y';
+    echo -n '/';
+    color_selection red 'n';
+    echo -n ' ';
+    color_selection blue ']';
+    echo -n ' ';
+    color_selection green '>>>';
+    echo -n ' ';
+}
+
+yn_color(){
+    case "${1}" in
+	'y')
+	    "${2}";
+	    ;;
+	'n')
+	    out_ok '...';
+	    ;;
+	*)
+	    out_error 'Option does not exist.';
+	    exit 64;
+	    ;;
+    esac
+}
+
+# 005 cmd line errors
+
+cmd_fail(){
+    echo '';
+    color_selection red '[ ERROR ]';
+    echo " ${1}";
+    echo '          -------------------------------------';
+    echo '          Run this script with -h to read help.';
+
+    exit 64;
+}
+
+cmd_help_no_args(){
+    echo '';
+    color_selection red '[ ERROR ]';
+    echo ' No arguments.';
+    echo '          -------------------------------------';
+    echo '          Run this script with -h to read help.';
+
+    exit 64;
+}
+
+cmd_help_much_args(){
+    echo '';
+    color_selection red '[ ERROR ]';
+    echo ' Too many arguments, slow down man!';
+    echo '          -------------------------------------';
+    echo '          Run this script with -h to read help.';
+
+    exit 64;
+}
+
+unknown_opt(){
+    echo '';
+    color_selection red '[ ERROR ]';
+    echo ' Option does not exist.';
+    echo '          -------------------------------------';
+    echo '          Run this script with -h to read help.';
+
+    exit 64;
+}
