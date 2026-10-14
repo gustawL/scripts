@@ -10,6 +10,7 @@ export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$ORIG_UID}"
 export WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-0}"
 
 export HOST_DOWNLOADS="$XDG_RUNTIME_DIR/LibreWolf-Downloads"
+
 mkdir -p "$HOST_DOWNLOADS"
 chmod 700 "$HOST_DOWNLOADS"
 
@@ -81,20 +82,54 @@ unshare -U -n -r bash -c '
     --proc /proc \
     --dev /dev \
     --tmpfs /tmp \
-    --tmpfs /dev/shm \
+    --tmpfs /dev/shm --perms 1777 \
     --tmpfs /run \
+    --tmpfs /proc/sys \
     --dir /run/user \
     --dir "$XDG_RUNTIME_DIR" \
     --tmpfs "$HOME" \
     --dir "$HOME/Downloads" \
     --ro-bind /bin /bin \
     --ro-bind /lib /lib \
-    --ro-bind /usr /usr \
+    --tmpfs /lib/modules \
     --ro-bind /lib64 /lib64 \
+    --ro-bind /usr /usr \
+    --tmpfs /usr/src \
+    --tmpfs /usr/include \
+    --tmpfs /usr/share/doc \
+    --tmpfs /usr/share/man \
+    --tmpfs /usr/share/info \
+    --tmpfs /usr/share/vulkan \
+    --tmpfs /usr/share/glvnd \
+    --tmpfs /usr/share/themes \
+    --tmpfs /usr/share/icons \
+    --tmpfs /proc/asound \
     --ro-bind /etc/ld.so.cache /etc/ld.so.cache \
     --ro-bind-try /etc/ssl /etc/ssl \
     --ro-bind "$RESOLV_ARG" /etc/resolv.conf \
     --ro-bind "$HOME/scripts/sandboxes/policies.json" /usr/lib64/librewolf/distribution/policies.json \
+    --ro-bind /dev/null /proc/cmdline \
+    --ro-bind /dev/null /proc/modules \
+    --ro-bind /dev/null /proc/kallsyms \
+    --ro-bind /dev/null /proc/config.gz \
+    --ro-bind /dev/null /proc/interrupts \
+    --ro-bind /dev/null /proc/buddyinfo \
+    --ro-bind /dev/null /proc/iomem \
+    --ro-bind /dev/null /proc/ioports \
+    --ro-bind /dev/null /proc/partitions \
+    --ro-bind /dev/null /proc/diskstats \
+    --ro-bind /dev/null /proc/devices \
+    --ro-bind /dev/null /proc/misc \
+    --ro-bind /dev/null /proc/version \
+    --ro-bind /dev/null /proc/uptime \
+    --ro-bind /dev/null /proc/loadavg \
+    --ro-bind /dev/null /proc/crypto \
+    --ro-bind /dev/null /proc/cpuinfo \
+    --ro-bind /dev/null /proc/meminfo \
+    --ro-bind /dev/null /proc/stat \
+    --ro-bind /dev/null /proc/vmstat \
+    --ro-bind /dev/null /proc/zoneinfo \
+    --ro-bind /dev/null /proc/swaps \
     --ro-bind-try /etc/fonts /etc/fonts \
     --ro-bind-try /var/cache/fontconfig /var/cache/fontconfig \
     --ro-bind-try /sys/class/hidraw /sys/class/hidraw \
