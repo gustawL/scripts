@@ -82,7 +82,7 @@ unshare -U -n -r bash -c '
     --proc /proc \
     --dev /dev \
     --tmpfs /tmp \
-    --tmpfs /dev/shm --perms 1777 \
+    --tmpfs /dev/shm \
     --tmpfs /run \
     --tmpfs /proc/sys \
     --dir /run/user \
