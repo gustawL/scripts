@@ -9,12 +9,16 @@ export ORIG_GID="$(id -g)"
 export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$ORIG_UID}"
 export WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-0}"
 
-export HOST_DOWNLOADS="$XDG_RUNTIME_DIR/LibreWolf-Downloads"
+export HOST_DOWNLOADS="$XDG_RUNTIME_DIR/Downloads"
+export HOST_LW_PROFILE="$XDG_RUNTIME_DIR/profile"
+export HOST_LW_CACHE="$XDG_RUNTIME_DIR/cache"
 
+mkdir -p "$HOST_LW_PROFILE" "$HOST_LW_CACHE"
+chmod 700 "$HOST_LW_PROFILE" "$HOST_LW_CACHE"
 mkdir -p "$HOST_DOWNLOADS"
 chmod 700 "$HOST_DOWNLOADS"
 
-export SANDBOX_RESOLV="$XDG_RUNTIME_DIR/LibreWolf-resolv.conf"
+export SANDBOX_RESOLV="$XDG_RUNTIME_DIR/resolv.conf"
 echo "nameserver 10.0.2.3" > "$SANDBOX_RESOLV"
 
 HIDRAW_ARGS=(--ro-bind-try /sys/class/hidraw /sys/class/hidraw)
@@ -42,7 +46,7 @@ for dev in /dev/hidraw*; do
 done
 export HIDRAW_FLAT="${HIDRAW_ARGS[*]:-}"
 
-PID_FILE="$XDG_RUNTIME_DIR/librewolf-netns.pid"
+PID_FILE="$XDG_RUNTIME_DIR/netns.pid"
 rm -f "$PID_FILE"
 
 (
@@ -89,6 +93,8 @@ unshare -U -n -r bash -c '
     --dir "$XDG_RUNTIME_DIR" \
     --tmpfs "$HOME" \
     --dir "$HOME/Downloads" \
+    --dir "$HOME/.config" \
+    --dir "$HOME/.cache" \
     --ro-bind /bin /bin \
     --ro-bind /lib /lib \
     --tmpfs /lib/modules \
@@ -130,9 +136,33 @@ unshare -U -n -r bash -c '
     --ro-bind /dev/null /proc/vmstat \
     --ro-bind /dev/null /proc/zoneinfo \
     --ro-bind /dev/null /proc/swaps \
+    --ro-bind /dev/null /proc/locks \
+--ro-bind /dev/null /proc/kcore \
+    --ro-bind /dev/null /proc/vmallocinfo \
+    --ro-bind /dev/null /proc/kpagecount \
+    --ro-bind /dev/null /proc/kpageflags \
+    --ro-bind /dev/null /proc/kpagecgroup \
+    --ro-bind /dev/null /proc/schedstat \
+    --ro-bind /dev/null /proc/softirqs \
+    --ro-bind /dev/null /proc/timer_list \
+    --ro-bind /dev/null /proc/sysrq-trigger \
+    --ro-bind /dev/null /proc/kmsg \
+    --ro-bind /dev/null /proc/dma \
+    --ro-bind /dev/null /proc/mtrr \
+    --ro-bind /dev/null /proc/cgroups \
+    --ro-bind /dev/null /proc/consoles \
+    --ro-bind /dev/null /proc/filesystems \
+    --ro-bind-try /dev/null /proc/keys \
+    --ro-bind-try /dev/null /proc/key-users \
+    --tmpfs /proc/bus \
+    --tmpfs /proc/driver \
+    --tmpfs /proc/irq \
+    --tmpfs /proc/acpi \
+    --tmpfs /proc/sysvipc \
+    --tmpfs /proc/fs \
+    --tmpfs /proc/tty \
     --ro-bind-try /etc/fonts /etc/fonts \
     --ro-bind-try /var/cache/fontconfig /var/cache/fontconfig \
-    --ro-bind-try /sys/class/hidraw /sys/class/hidraw \
     "${HIDRAW_ARRAY[@]}" \
     --ro-bind-try /etc/alsa /etc/alsa \
     --ro-bind-try /etc/asound.conf /etc/asound.conf \
@@ -140,6 +170,8 @@ unshare -U -n -r bash -c '
     --ro-bind "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY" "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY" \
     --ro-bind-try "$XDG_RUNTIME_DIR/pipewire-0" "$XDG_RUNTIME_DIR/pipewire-0" \
     --bind "$HOST_DOWNLOADS" "$HOME/Downloads" \
+    --bind "$HOST_LW_PROFILE" "$HOME/.config/librewolf" \
+    --bind "$HOST_LW_CACHE" "$HOME/.cache/librewolf" \
     --setenv MOZ_ENABLE_WAYLAND 1 \
     --setenv MOZ_CUBEB_BACKEND alsa \
     --setenv XDG_RUNTIME_DIR "$XDG_RUNTIME_DIR" \
