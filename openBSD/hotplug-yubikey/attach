@@ -1,27 +1,11 @@
 #!/bin/sh
+ACTIVE_USER=$(/usr/bin/who | /usr/bin/awk 'NR == 1 {print $1}')
  
-DEVCLASS=$1
-DEVNAME=$2
- 
-case $DEVCLASS in
-0) DEVCLASS_NAME="generic" ;;
-1) DEVCLASS_NAME="CPU" ;;
-2) DEVCLASS_NAME="disk drive" ;;
-3) DEVCLASS_NAME="network interface" ;;
-4) DEVCLASS_NAME="tape device" ;;
-5) DEVCLASS_NAME="serial interface" ;;
-esac
- 
-case $DEVNAME in
-fido*)
-    /etc/hotplug/ck-session-notify "hotplugd" "" \
-        "Attachment" "$DEVCLASS_NAME: Yubico YubiKey OTP+FIDO+CCID" 5000
-    USER="$(ck-list-sessions | grep -B7 "active = TRUE" | grep "unix-user" |
-        head -1 | sed "s/.*unix-user = '//; s/'.*//" | xargs id -nu)"
-    if test -n "$USER"; then
-        chown $USER /dev/ugen*.*
-        chown $USER /dev/usb7
-    fi
-    ;;
-*) ;;
+case "$2" in
+    fido*)
+        if [ -n "$ACTIVE_USER" ]; then
+            chown "$ACTIVE_USER" /dev/ugen0.*
+            chown "$ACTIVE_USER" /dev/usb1
+        fi
+        ;;
 esac
